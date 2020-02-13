@@ -1,0 +1,18 @@
+m_robot:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers ---------------------------------------
+  left_wheel_position_controller:
+    type: position_controllers/JointPositionController
+    joint: left_wheel_hinge
+
+  right_wheel_position_controller:
+    type: position_controllers/JointPositionController
+    joint: right_wheel_hinge
+
+  gazebo_ros_control/pid_gains:
+    left_wheel_hinge: {p: 11, i: 2.8, d: 4.2}
+    right_wheel_hinge: {p: 11, i: 2.8, d: 4.2}

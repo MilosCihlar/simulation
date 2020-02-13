@@ -1,0 +1,15 @@
+ <launch>
+
+        <arg name = "world_frame" />
+        <arg name = "robot_name" />
+        <arg name = "freq" /> 
+ 
+    <node name="gazebo_loc" pkg="gazebo_loc" type="gazebo_loc" respawn="true" output="screen" >
+        <param name="world_frame" value="$(arg world_frame)"/> 
+        <param name="robot_name" value="$(arg robot_name)"/> 
+        <param name="freq" value="$(arg freq)"/> 
+
+        <remap from="sub_robot_state" to="/gazebo/model_states" />
+    </node> 
+
+</launch>

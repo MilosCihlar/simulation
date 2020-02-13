@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+
+<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+  <xacro:property name="PI" value="3.1415926535897931"/>
+
+  <xacro:property name="chassisHeight" value="0.1"/>
+  <xacro:property name="chassisLength" value="0.4"/>
+  <xacro:property name="chassisWidth" value="0.4"/>
+  <xacro:property name="chassisMass" value="50"/>
+
+  <xacro:property name="casterRadius" value="0.05"/>
+  <xacro:property name="casterMass" value="5"/>
+
+  <xacro:property name="wheelWidth" value="0.05"/>
+  <xacro:property name="wheelRadius" value="0.1"/>
+  <xacro:property name="wheelPos" value="0.2"/>
+  <xacro:property name="wheelMass" value="5"/>
+
+  <xacro:property name="rplidarMass" value="0.170"/>
+  <xacro:property name="rplidarSamples" value="1020"/>
+  <xacro:property name="rplidarResolution" value="1"/>
+  <xacro:property name="rplidarMinAngle" value="0"/>
+  <xacro:property name="rplidarMaxAngle" value="6.283185307"/>
+  <xacro:property name="rplidarRange" value="12"/>
+  <xacro:property name="rplidarLaserHeight" value="0.03" />
+
+  <xacro:include filename="$(find simulation)/models/m_robot/m_robot.gazebo" />
+  <xacro:include filename="$(find simulation)/models/m_robot/materials.xacro" />
+  <xacro:include filename="$(find simulation)/models/m_robot/macros.xacro" />
+
+  <link name="m_robot"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="m_robot"/>
+    <child link="chassis"/>
+    <origin xyz="${+wheelPos-chassisLength/4} 0 0" rpy="0 0 0" />
+  </joint>
+
+  <link name="chassis">
+    <collision>
+      <origin xyz="0 0 ${wheelRadius}" rpy="0 0 0"/>
+        <geometry>
+	        <box size="${chassisLength} ${chassisWidth} ${chassisHeight}"/>
+        </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 ${wheelRadius}" rpy="0 0 0"/>
+      <geometry>
+	       <box size="${chassisLength} ${chassisWidth} ${chassisHeight}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 ${wheelRadius}" rpy="0 0 0"/>
+      <mass value="${chassisMass}"/>
+      <box_inertia m="${chassisMass}" x="${chassisLength}" y="${chassisWidth}" z="${chassisHeight}"/>
+    </inertial>
+  </link>
+
+  <joint name="fixed" type="fixed">
+    <parent link="chassis"/>
+    <child link="caster_wheel"/>
+    <origin xyz="${-casterRadius+chassisLength/2} 0 ${casterRadius-chassisHeight+wheelRadius}" rpy="0 0 0" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <link name="caster_wheel">
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	    <sphere radius="${casterRadius}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	    <sphere radius="${casterRadius}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${casterMass}"/>
+      <sphere_inertia m="${casterMass}" r="${casterRadius}"/>
+    </inertial>
+  </link>
+
+  <wheel lr="right" tY="-1"/>
+  <wheel lr="left" tY="1"/>
+
+
+  <link name="rplidar">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://simulation/meshes/hokuyo.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="${rplidarMass}" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <joint name="rplidar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="rplidar"/>
+    <origin xyz="${-casterRadius+chassisLength/2} 0 ${casterRadius+chassisHeight + rplidarLaserHeight}" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+  <gazebo reference="rplidar">
+    <sensor type="ray" name="head_hokuyo_sensor">
+      <pose> 0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>${rplidarSamples}</samples>
+            <resolution>${rplidarResolution}</resolution>
+            <min_angle>${rplidarMinAngle}</min_angle>
+            <max_angle>${rplidarMaxAngle}</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>${rplidarRange}</max>
+          <resolution>0.01</resolution> <!--0.01-->
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise parameters based on published spec for Hokuyo laser
+               achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+               stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+               reading. -->
+          <mean>0.0</mean> 
+          <stddev>0.01</stddev><!--0.01-->
+        </noise>
+      </ray>
+
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+        <topicName>/m_robot/laser/scan</topicName>
+        <frameName>rplidar</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>
+
