@@ -5,26 +5,26 @@
 
   <xacro:property name="PI" value="3.1415926535897931"/>
 
-  <xacro:property name="chassisHeight" value="0.1"/>
-  <xacro:property name="chassisLength" value="0.4"/>
-  <xacro:property name="chassisWidth" value="0.4"/>
+  <xacro:property name="chassisHeight" value="0.05"/>
+  <xacro:property name="chassisLength" value="0.2"/>
+  <xacro:property name="chassisWidth" value="0.2"/>
   <xacro:property name="chassisMass" value="50"/>
 
-  <xacro:property name="casterRadius" value="0.05"/>
+  <xacro:property name="casterRadius" value="0.02"/>
   <xacro:property name="casterMass" value="5"/>
 
-  <xacro:property name="wheelWidth" value="0.05"/>
-  <xacro:property name="wheelRadius" value="0.1"/>
-  <xacro:property name="wheelPos" value="0.2"/>
+  <xacro:property name="wheelWidth" value="0.02"/>
+  <xacro:property name="wheelRadius" value="0.05"/>
+  <xacro:property name="wheelPos" value="0.1"/>
   <xacro:property name="wheelMass" value="5"/>
 
-  <xacro:property name="rplidarMass" value="0.170"/>
+  <xacro:property name="rplidarMass" value="0.17"/>
   <xacro:property name="rplidarSamples" value="1020"/>
   <xacro:property name="rplidarResolution" value="1"/>
   <xacro:property name="rplidarMinAngle" value="0"/>
   <xacro:property name="rplidarMaxAngle" value="6.283185307"/>
   <xacro:property name="rplidarRange" value="12"/>
-  <xacro:property name="rplidarLaserHeight" value="0.03" />
+  <xacro:property name="rplidarLaserHeight" value="0.04" />
 
   <xacro:include filename="$(find simulation)/models/m_robot/m_robot.gazebo" />
   <xacro:include filename="$(find simulation)/models/m_robot/materials.xacro" />
@@ -54,10 +54,10 @@
       <material name="blue"/>
     </visual>
 
-    <inertial>
-      <origin xyz="0 0 ${wheelRadius}" rpy="0 0 0"/>
+    <inertial>          
+      <origin xyz="0 0 ${wheelRadius/2}" rpy="0 0 0"/>
       <mass value="${chassisMass}"/>
-      <box_inertia m="${chassisMass}" x="${chassisLength}" y="${chassisWidth}" z="${chassisHeight}"/>
+      <box_inertia m="${chassisMass}" x="${chassisWidth}" y="${chassisLength}" z="${chassisHeight}"/>
     </inertial>
   </link>
 
@@ -121,7 +121,7 @@
   <joint name="rplidar_joint" type="fixed">
     <parent link="chassis"/>
     <child link="rplidar"/>
-    <origin xyz="${-casterRadius+chassisLength/2} 0 ${casterRadius+chassisHeight + rplidarLaserHeight}" rpy="0 0 0" />
+    <origin xyz="${-2*casterRadius+chassisLength/2} 0 ${casterRadius+chassisHeight + rplidarLaserHeight}" rpy="0 0 0" />
     <axis xyz="0 1 0" />
   </joint>
 

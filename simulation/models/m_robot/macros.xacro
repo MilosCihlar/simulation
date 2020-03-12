@@ -7,9 +7,9 @@
       </macro>
 
       <macro name="box_inertia" params="m x y z">
-        <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
-                  iyy="${m*(x*x+z*z)/12}" iyz = "0"
-                  izz="${m*(x*x+z*z)/12}" />
+        <inertia  iyy="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
+                  izz="${m*(x*x+y*y)/12}" iyz = "0"
+                  ixx="${m*(x*x+z*z)/12}" />
       </macro>
 
       <macro name="sphere_inertia" params="m r">
@@ -35,18 +35,18 @@
           <geometry>
             <cylinder length="${wheelWidth}" radius="${wheelRadius}"/>
           </geometry>
-          <surface>
-            <friction>
+          <!--<surface>
+           <friction>
               <ode>
-                <mu>1000000</mu>
-                <mu2>1000000</mu2>
-                <!--<kp  value="1000"/>
-                <kd  value="100" />-->
-                <minDepth>0.001</minDepth>  
-                <maxVel>0.01</maxVel>  
+                <mu1 value="100000000" />
+                <mu2 value="100000000" />
+                <kp  value="100000000"/>
+                <kd  value="100" />
+                <minDepth>0.01</minDepth>  
+                <maxVel>0.001</maxVel>  
               </ode>
             </friction>
-          </surface>
+          </surface>-->
         </collision>
 
         <inertial>
@@ -58,12 +58,12 @@
 
         <gazebo reference="${lr}_wheel">
           <material>Gazebo/Black</material>
-          <mu1 value="1000000"/>
-          <mu2 value="1000000"/>
-         <!-- <kp value="1000"/>
-          <kd value="100" />-->
-          <minDepth>0.001</minDepth>  
-          <maxVel>0.01</maxVel>  
+          <mu1 value="100000000000"/>
+          <mu2 value="100000000000"/>
+          <kp value="10000000"/>
+          <kd value="0" />
+          <minDepth>0.000001</minDepth>  
+          <maxVel>0.0001</maxVel>  
         </gazebo>
 
        <joint name="${lr}_wheel_hinge" type="continuous">
