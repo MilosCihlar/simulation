@@ -8,10 +8,11 @@
   <arg name="debug" default="false"/>
 
   <!-- Robot parametrs-->
-  <arg name="world_frame" default="simulation" />
+  <arg name="world_frame" default="world_frame" />
   <arg name="robot_name" default="m_robot" />
   <arg name="wheel_radius" default="0.05" />
-  <arg name="span" default="0.2036" />
+  <arg name="span" default="0.211" />
+  <arg name="pathTrackingCircle" default="0.1" />
 
   <!-- Start possition -->
   <arg name="x" default="0" />
@@ -56,6 +57,7 @@
         <arg name="radius" value="$(arg wheel_radius)" />
         <arg name="freq" value="50" /> 
         <arg name="span" value="$(arg span)"/>
+        <arg name="pathTrackingCircle" value="$(arg pathTrackingCircle)" /> 
 
         <arg name="x" value="($arg x)" />
         <arg name="y" value="($arg y)" />
@@ -71,13 +73,13 @@
 
         <arg name="robot_name" value="$(arg robot_name)" />
         <arg name="world_frame" value="$(arg world_frame)" />
-        <arg name="freq" value="50" />
+        <arg name="freq" value="100" />
         <arg name="span" value="$(arg span)" />
         <arg name="radius" value="$(arg wheel_radius)" />
         <arg name="simul" value="true"/>
   </include> 
 
   <!-- Start Rviz with m_robot.rviy settings-->   
-  <node type="rviz" name="rviz" pkg="rviz" args="-span $(find simulation)/rviz/m_robot.rviz" />
-
+  <!--<node type="rviz" name="rviz" pkg="rviz" args="-span $(find simulation)/rviz/m_robot.rviz" />-->
+  
 </launch>

@@ -55,7 +55,6 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(rate);
     while (n.ok())
     {
-        
         transform.setOrigin( tf::Vector3(robot.pos_x, robot.pos_y, robot.pos_z) );                      
         transform.setRotation( tf::Quaternion(robot.quat_x, robot.quat_y, robot.quat_z, robot.quat_w));
     

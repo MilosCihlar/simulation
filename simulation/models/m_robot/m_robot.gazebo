@@ -9,17 +9,13 @@
 
  <gazebo reference="chassis">
   <material>Gazebo/Blue</material>
-  <mu1>0</mu1>
-  <mu2>0</mu2>
  </gazebo>
 
  <gazebo reference="caster_wheel">
-  <mu1>0.1</mu1>
-  <mu2>0.1</mu2>
-  <kp value="10000000"/>
-  <kd value="0" />
-  <minDepth>0.01</minDepth>  
-  <maxVel>0.001</maxVel>  
-  <material>Gazebo/Black</material>
+     <mu1 value="0" />
+     <mu2 value="0" />
+     <kp  value="1000000.0" />
+     <kd  value="1.0" />
+     <material>Gazebo/Black</material>
  </gazebo>
 </robot>
